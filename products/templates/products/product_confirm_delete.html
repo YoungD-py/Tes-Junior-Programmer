@@ -1,0 +1,43 @@
+{% extends 'products/base.html' %}
+
+{% block title %}Konfirmasi Hapus Produk - Fast Print{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h3 class="card-title mb-0">⚠️ Konfirmasi Penghapusan</h3>
+            </div>
+            <div class="card-body">
+                <p class="mb-4">
+                    Anda akan menghapus produk berikut. Tindakan ini <strong>tidak dapat dibatalkan</strong>.
+                </p>
+                
+                <div class="alert alert-warning" role="alert">
+                    <h5 class="alert-heading">Produk yang akan dihapus:</h5>
+                    <hr>
+                    <p><strong>Nama:</strong> {{ product.nama_produk }}</p>
+                    <p><strong>ID:</strong> {{ product.id_produk }}</p>
+                    <p><strong>Harga:</strong> Rp {{ product.harga|floatformat:0|add:"0"|stringformat:",.0f"|cut:"," }}</p>
+                    <p><strong>Kategori:</strong> {{ product.kategori.nama_kategori }}</p>
+                    <p class="mb-0"><strong>Status:</strong> {{ product.status.nama_status }}</p>
+                </div>
+
+                <p class="text-danger fw-bold">Apakah Anda yakin?</p>
+            </div>
+            <div class="card-footer">
+                <form method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-lg" onclick="return confirm('Yakin ingin menghapus produk ini?')">
+                        🗑️ Hapus Produk
+                    </button>
+                </form>
+                <a href="{% url 'product_detail' product.id_produk %}" class="btn btn-secondary btn-lg">
+                    ← Batal
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

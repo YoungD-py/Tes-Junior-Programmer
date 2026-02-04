@@ -1,0 +1,112 @@
+{% extends 'products/base.html' %}
+
+{% block title %}{{ title }} - Fast Print{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title mb-0">{{ title }}</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <h4 class="alert-heading">Error!</h4>
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.nama_produk.id_for_label }}" class="form-label">
+                            Nama Produk <span class="text-danger">*</span>
+                        </label>
+                        {{ form.nama_produk }}
+                        {% if form.nama_produk.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.nama_produk.errors %}
+                                    {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="form-text text-muted">Minimal 3 karakter</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.harga.id_for_label }}" class="form-label">
+                            Harga (Rp) <span class="text-danger">*</span>
+                        </label>
+                        {{ form.harga }}
+                        {% if form.harga.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.harga.errors %}
+                                    {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="form-text text-muted">Masukkan angka positif</small>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.kategori.id_for_label }}" class="form-label">
+                                Kategori <span class="text-danger">*</span>
+                            </label>
+                            {{ form.kategori }}
+                            {% if form.kategori.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.kategori.errors %}
+                                        {{ error }}<br>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">
+                                Status <span class="text-danger">*</span>
+                            </label>
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.status.errors %}
+                                        {{ error }}<br>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.deskripsi.id_for_label }}" class="form-label">
+                            Deskripsi (Opsional)
+                        </label>
+                        {{ form.deskripsi }}
+                        {% if form.deskripsi.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.deskripsi.errors %}
+                                    {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            ✓ {{ button_text }}
+                        </button>
+                        <a href="{% url 'product_list' %}" class="btn btn-secondary btn-lg">
+                            ← Batal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

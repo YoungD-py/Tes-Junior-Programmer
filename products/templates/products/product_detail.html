@@ -1,0 +1,83 @@
+{% extends 'products/base.html' %}
+
+{% block title %}Detail Produk - Fast Print{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title mb-0">📋 Detail Produk</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>{{ product.nama_produk }}</h5>
+                        
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><strong>ID:</strong></td>
+                                <td>{{ product.id_produk }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Harga:</strong></td>
+                                <td class="text-primary fw-bold fs-5">
+                                    Rp {{ product.harga|floatformat:0|add:"0"|stringformat:",.0f"|cut:"," }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kategori:</strong></td>
+                                <td>
+                                    <span class="badge bg-info">{{ product.kategori.nama_kategori }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Status:</strong></td>
+                                <td>
+                                    <span class="badge bg-success">{{ product.status.nama_status }}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dibuat:</strong></td>
+                                <td>{{ product.created_at|date:"d/m/Y H:i" }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Diperbarui:</strong></td>
+                                <td>{{ product.updated_at|date:"d/m/Y H:i" }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        {% if product.deskripsi %}
+                            <h5>Deskripsi:</h5>
+                            <p>{{ product.deskripsi }}</p>
+                        {% else %}
+                            <p class="text-muted">Tidak ada deskripsi untuk produk ini.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'product_update' product.id_produk %}" class="btn btn-warning">
+                    ✏️ Edit Produk
+                </a>
+                <a href="{% url 'product_delete' product.id_produk %}" class="btn btn-danger" onclick="return confirmDelete()">
+                    🗑️ Hapus Produk
+                </a>
+                <a href="{% url 'product_list' %}" class="btn btn-secondary">
+                    ← Kembali ke Daftar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function confirmDelete() {
+        return confirm('Apakah Anda yakin ingin menghapus produk ini?');
+    }
+</script>
+{% endblock %}

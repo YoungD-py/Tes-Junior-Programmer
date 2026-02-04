@@ -1,0 +1,182 @@
+{% extends 'products/base.html' %}
+
+{% block title %}Daftar Produk - Fast Print Indonesia{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <h1>
+        <i class="fas fa-box" style="margin-right: 12px;"></i>
+        Produk Tersedia
+    </h1>
+    <a href="{% url 'product_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus-circle"></i> Tambah Produk
+    </a>
+</div>
+
+<!-- Filter Section -->
+<div class="filter-section">
+    <form method="get" class="row g-4">
+        <div class="col-md-5">
+            <label for="search" class="form-label">
+                <i class="fas fa-search"></i> Cari Produk
+            </label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="search" 
+                name="search" 
+                placeholder="Ketik nama produk..."
+                value="{{ search_query }}"
+            >
+        </div>
+        
+        <div class="col-md-5">
+            <label for="kategori" class="form-label">
+                <i class="fas fa-filter"></i> Filter Kategori
+            </label>
+            <select class="form-select" id="kategori" name="kategori">
+                <option value="">Semua Kategori</option>
+                {% for kat in kategoris %}
+                    <option value="{{ kat.id_kategori }}" {% if kategori_filter|stringformat:"s" == kat.id_kategori|stringformat:"s" %}selected{% endif %}>
+                        {{ kat.nama_kategori }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-success w-100">
+                <i class="fas fa-search"></i> Cari
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Products Grid -->
+{% if products %}
+    <div class="product-grid">
+        {% for product in products %}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        <i class="fas fa-cube" style="margin-right: 8px; color: #667eea;"></i>
+                        {{ product.nama_produk }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <strong><i class="fas fa-tag"></i> Kategori:</strong><br>
+                        {{ product.kategori.nama_kategori }}
+                    </p>
+                    
+                    <p class="card-text">
+                        <strong><i class="fas fa-check-circle"></i> Status:</strong><br>
+                        <span class="badge">{{ product.status.nama_status }}</span>
+                    </p>
+                    
+                    <p class="card-text">
+                        <strong><i class="fas fa-dollar-sign"></i> Harga:</strong><br>
+                        <span class="price-badge">Rp {{ product.harga|floatformat:0|add:"0"|stringformat:",.0f"|cut:"," }}</span>
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'product_detail' product.id_produk %}" class="btn btn-sm btn-info">
+                        <i class="fas fa-eye"></i> Detail
+                    </a>
+                    <a href="{% url 'product_update' product.id_produk %}" class="btn btn-sm btn-warning">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="{% url 'product_delete' product.id_produk %}" class="btn btn-sm btn-danger" onclick="return confirmDelete()">
+                        <i class="fas fa-trash"></i> Hapus
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+        <nav aria-label="Pagination" class="mt-5 mb-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if kategori_filter %}&kategori={{ kategori_filter }}{% endif %}">
+                            <i class="fas fa-chevron-left"></i> First
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if kategori_filter %}&kategori={{ kategori_filter }}{% endif %}">Previous</a>
+                    </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if kategori_filter %}&kategori={{ kategori_filter }}{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if kategori_filter %}&kategori={{ kategori_filter }}{% endif %}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if kategori_filter %}&kategori={{ kategori_filter }}{% endif %}">
+                            Last <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+
+{% else %}
+    <!-- Empty State -->
+    <div class="empty-state">
+        <div class="empty-state-icon">
+            <i class="fas fa-inbox"></i>
+        </div>
+        <div class="empty-state-text">
+            Tidak Ada Produk Tersedia
+        </div>
+        <p style="color: #64748b; margin-bottom: 25px; font-size: 1rem;">
+            Belum ada produk dengan status "bisa dijual". Mari mulai dengan menambahkan produk baru atau sinkronisasi dari API.
+        </p>
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'product_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus-circle"></i> Tambah Produk Baru
+            </a>
+            <a href="{% url 'fetch_api' %}" class="btn btn-success">
+                <i class="fas fa-sync"></i> Sinkronisasi API
+            </a>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function confirmDelete() {
+        return confirm('⚠️ Apakah Anda yakin ingin menghapus produk ini?\n\nTindakan ini tidak dapat dibatalkan!');
+    }
+
+    // Add smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+</script>
+{% endblock %}
+

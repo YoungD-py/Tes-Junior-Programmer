@@ -1,0 +1,99 @@
+{% extends 'products/base.html' %}
+
+{% block title %}Sinkronisasi API - Fast Print{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title mb-0">🔄 Sinkronisasi Data dari API Eksternal</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info" role="alert">
+                    <h4 class="alert-heading">Informasi:</h4>
+                    <p>Fitur ini akan mengambil data produk dari API eksternal Fast Print dan menyimpannya ke database lokal.</p>
+                    <hr>
+                    <p class="mb-0">
+                        <strong>API:</strong> https://recruitment.fastprint.co.id/tes/api_tes_programmer
+                    </p>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            Username (default: "user")
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="username" 
+                            name="username" 
+                            value="user"
+                            placeholder="Masukkan username untuk autentikasi"
+                        >
+                        <small class="form-text text-muted">
+                            Password akan di-generate otomatis dengan format MD5: bisacoding-DD-MM-YY
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-success btn-lg" onclick="return confirm('Mulai sinkronisasi data dari API?')">
+                            🔄 Sinkronisasi Sekarang
+                        </button>
+                        <a href="{% url 'product_list' %}" class="btn btn-secondary btn-lg">
+                            ← Batal
+                        </a>
+                    </div>
+                </form>
+
+                <hr>
+
+                <div class="alert alert-warning" role="alert">
+                    <h5 class="alert-heading">⚠️ Penting:</h5>
+                    <ul class="mb-0">
+                        <li>Sinkronisasi akan menambah atau memperbarui produk yang sudah ada</li>
+                        <li>Pastikan koneksi internet stabil</li>
+                        <li>Proses ini mungkin memakan waktu beberapa detik</li>
+                        <li>Password akan di-generate berdasarkan tanggal saat ini</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h4 class="card-title mb-0">📝 Detail Proses Sinkronisasi</h4>
+            </div>
+            <div class="card-body">
+                <h5>Langkah-langkah:</h5>
+                <ol>
+                    <li>Sistem membuat Basic Auth header dengan username dan password MD5</li>
+                    <li>Request dikirim ke API eksternal</li>
+                    <li>Response dari API diparse dan divalidasi</li>
+                    <li>Kategori dan Status baru dibuat jika belum ada</li>
+                    <li>Data produk disimpan ke database lokal</li>
+                </ol>
+
+                <h5 class="mt-4">Data yang Disinkronisasi:</h5>
+                <ul>
+                    <li>Nama Produk</li>
+                    <li>Harga</li>
+                    <li>Kategori</li>
+                    <li>Status</li>
+                </ul>
+
+                <h5 class="mt-4">Response yang Dipantau:</h5>
+                <ul>
+                    <li>HTTP Status Code</li>
+                    <li>Response Headers</li>
+                    <li>Response Cookies</li>
+                    <li>Error messages (jika ada)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

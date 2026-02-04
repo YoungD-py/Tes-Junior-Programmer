@@ -550,6 +550,5 @@ Created with ❤️ using Django & DRF
 
 ## 📞 Support
 
-Untuk pertanyaan atau issue, silakan contact admin.
+Untuk pertanyaan atau issue, silakan contact email deruanggoro26@gmail.com
 
-Happy coding! 🚀
